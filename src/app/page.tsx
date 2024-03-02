@@ -1,6 +1,10 @@
-import { Test } from "@/components/example";
+import { Navbar } from "@/components/navbar";
 
 
 export default function App() {
-  return <Test />;
+  return (
+    <>
+    <Navbar />
+    </>
+  );
 }
