@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,44 +22,52 @@ import {
 } from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { createMainCategory } from "./actions/main-category";
+import { createSubCategory } from "./actions/sub-category";
 
 const formSchema = z.object({
-  mainCategory: z.string().min(2, {
-    message: "Main category must be selected from the list.",
-  }),
-  subCategory: z.string().min(2, {
-    message: "Sub category must be selected from the list.",
-  }),
+  mainCategory: z.string(),
+  mainCategoryChildren: z.string(),
+  subCategory: z.string(),
 });
 
 export default function ProfileForm() {
   const [mainCategoryList, setMainCategoryList] = useState({}) as any;
+  const [subCategoryList, setSubCategoryList] = useState({}) as any;
+  const [showMainCategoryChildren, setShowMainCategoryChildren] =
+    useState(false);
+  const [mainCategoryChildrenType, setMainCategoryChildrenType] = useState("");
 
   useEffect(() => {
-    const updateViews = async () => {
-      const updatedViews = await createMainCategory()
-      setMainCategoryList(updatedViews)
+    const getMainCategory = async () => {
+      const getMainCategory = await createMainCategory();
+      setMainCategoryList(getMainCategory);
+    };
+    const getSubCategory = async () => {
+      const getSubCategory = await createSubCategory();
+      setSubCategoryList(getSubCategory);
     }
- 
-    updateViews()
+
+    getMainCategory();
+    getSubCategory();
   }, []);
 
-
-  // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       mainCategory: "",
+      mainCategoryChildren: "",
       subCategory: "",
     },
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
   }
+
+  console.log(mainCategoryList.data?.categories?.find((category: {slug: string}) => {
+    category.slug === "cars-motorcycles-accessories"
+  }))
+  console.log(mainCategoryList)
 
   return (
     <Form {...form}>
@@ -71,7 +78,14 @@ export default function ProfileForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Main Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={(value) => {
+                  field.onChange(value)
+                  setShowMainCategoryChildren(true);
+                  setMainCategoryChildrenType(value)
+                }}
+                defaultValue={field.value}
+              >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a main category." />
@@ -89,6 +103,38 @@ export default function ProfileForm() {
             </FormItem>
           )}
         />
+        {showMainCategoryChildren && (
+          <FormField
+            control={form.control}
+            name="mainCategoryChildren"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Main Category children</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a main category children." />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {/* {mainCategoryList.data?.categories?.filter((category: {slug: string}) => {
+                     console.log(category.slug === mainCategoryChildrenType);
+                      category.slug === mainCategoryChildrenType
+                    }).children?.map((category: any) => (
+                      <SelectItem key={category?.slug} value={category?.slug}>
+                        {category?.slug}
+                      </SelectItem>
+                    ))} */}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <FormField
           control={form.control}
           name="subCategory"
@@ -98,13 +144,15 @@ export default function ProfileForm() {
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a verified email to display" />
+                    <SelectValue placeholder="Select a sub category." />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="m@example.com">m@example.com</SelectItem>
-                  <SelectItem value="m@google.com">m@google.com</SelectItem>
-                  <SelectItem value="m@support.com">m@support.com</SelectItem>
+                {subCategoryList.data?.map((category: any) => (
+                    <SelectItem key={category?.slug} value={category?.slug}>
+                      {category?.slug}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormMessage />
