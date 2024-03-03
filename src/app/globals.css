@@ -16,8 +16,8 @@
     --primary: 337 94% 42%;
     --primary-foreground: 0 0% 51%;
  
-    --secondary: 32 100% 56%;
-    --secondary-foreground: 0 0% 9%;
+    --secondary: 33 100% 96%;
+    --secondary-foreground: 32 100% 56%;
  
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
@@ -71,6 +71,6 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-stone-50 text-foreground;
   }
 }
