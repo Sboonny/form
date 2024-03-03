@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { LogoIcon } from "./ui/logo-icon";
-import { MenuIcon } from "./ui/menu-icon";
+import { LogoIcon } from "./icons/logo-icon";
+import { MenuIcon } from "./icons/menu-icon";
 import {
   Menubar,
   MenubarMenu,
@@ -9,13 +9,13 @@ import {
   MenubarItem,
   MenubarSeparator,
 } from "./ui/menubar";
-import { NotificationIcon } from "./ui/notification-icon";
-import { SearchIcon } from "./ui/search-icon";
+import { NotificationIcon } from "./icons/notification-icon";
+import { SearchIcon } from "./icons/search-icon";
 import { Separator } from "./ui/separator";
 
 export function Navbar() {
   return (
-    <nav className="flex items-center justify-between p-4 h-20 bg-white">
+    <nav className="flex items-center justify-between p-4 h-12 bg-white">
       <Menubar className="lg:hidden bg-transparent border-0">
         <MenubarMenu>
           <MenubarTrigger className="hover:bg-slate-100">
